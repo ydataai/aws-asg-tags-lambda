@@ -1,0 +1,81 @@
+name: Prereleased
+
+
+
+on:
+  release:
+    types:
+    - prereleased
+
+
+
+env:
+  GHCR_REGISTRY: ghcr.io/${{ github.repository_owner }}/
+  GHCR_USERNAME: ${{ github.repository_owner }}
+  GHCR_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+  DOCKER_REPOSITORY: aws-asg-tags-lambda
+
+
+
+jobs:
+  cancel_previous:
+    name: 'Cancel Previous Runs'
+    runs-on: ubuntu-20.04
+    timeout-minutes: 3
+
+    steps:
+      - uses: ydataai/cancel-workflow-action@0.7.0-fix
+        with:
+          ignore_sha: true
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+
+
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-20.04
+
+    needs:
+    - cancel_previous
+
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+
+    steps:
+    - name: Version
+      id: version
+      run: echo ::set-output name=value::${GITHUB_REF#refs/*/}
+
+
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+
+    - name: Login to GitHub Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.GHCR_REGISTRY }}
+        username: ${{ env.GHCR_USERNAME }}
+        password: ${{ env.GHCR_PASSWORD }}
+
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v3
+      env:
+        DOCKER_IMAGE_TAG: ${{ env.GHCR_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}
+      with:
+        push: true
+        tags: ${{ env.DOCKER_IMAGE_TAG }}

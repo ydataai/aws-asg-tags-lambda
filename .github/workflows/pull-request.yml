@@ -1,0 +1,50 @@
+name: Pull Request
+
+
+
+on:
+  pull_request:
+    branches:
+    - main
+
+
+
+jobs:
+  cancel_previous:
+    name: 'Cancel Previous Runs'
+    runs-on: ubuntu-20.04
+    timeout-minutes: 3
+
+    steps:
+      - uses: ydataai/cancel-workflow-action@0.7.0
+        with:
+          ignore_sha: true
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+
+  validate:
+    name: Validate
+    runs-on: ubuntu-20.04
+
+    needs:
+    - cancel_previous
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+
+    - uses: fwal/setup-swift@v1
+      with:
+        swift-version: "5.6.1"
+
+    - name: Package Resolve
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: swift package resolve
+
+    - name: Build for test
+      run: swift build
