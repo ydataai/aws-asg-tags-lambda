@@ -1,3 +1,3 @@
-# YData's open-source-template
+# AWS Auto Scaling Groups Tag lambda
 
-New YData Open Source repositories should use this repository as a template.
+A lambda that extracts information from k8s nodes into Auto Scaling Groups
