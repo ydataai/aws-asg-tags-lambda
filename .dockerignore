@@ -1,0 +1,10 @@
+.build/
+.git/
+.github/
+.gitignore
+.releaserc.json
+.swiftpm/
+.swift-format
+Makefile
+README.md
+tmp
