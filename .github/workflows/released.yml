@@ -1,0 +1,79 @@
+name: Released
+
+
+
+on:
+  release:
+    types:
+    - released
+
+
+
+env:
+  GHCR_REGISTRY: ghcr.io/${{ github.repository_owner }}/
+  GHCR_USERNAME: ${{ github.repository_owner }}
+  GHCR_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+  DOCKER_REPOSITORY: aws-asg-tags-lambda
+
+
+
+jobs:
+  cancel_previous:
+    name: 'Cancel Previous Runs'
+    runs-on: ubuntu-20.04
+    timeout-minutes: 3
+
+    steps:
+      - uses: ydataai/cancel-workflow-action@0.7.0-fix
+        with:
+          ignore_sha: true
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+
+
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-20.04
+
+    needs:
+    - cancel_previous
+
+    outputs:
+      build_number: ${{ steps.short_sha.outputs.value }}
+      version: ${{ steps.version.outputs.value }}
+
+    steps:
+    - name: Version
+      id: version
+      run: echo ::set-output name=value::${GITHUB_REF#refs/*/}
+
+    - uses: actions/checkout@v3
+
+    - name: Git Short sha
+      id: short_sha
+      run: echo "::set-output name=value::$(git rev-parse --short HEAD)"
+
+
+  docker:
+    name: Docker Tag and Push
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+
+    steps:
+    - name: Login to GitHub Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.GHCR_REGISTRY }}
+        username: ${{ env.GHCR_USERNAME }}
+        password: ${{ env.GHCR_PASSWORD }}
+
+    - name: Docker tag and push
+      env:
+        SOURCE: ${{ env.GHCR_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}.${{ needs.prepare.outputs.build_number }}
+        DESTINATION: ${{ env.GHCR_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}
+      run: |
+        docker pull $SOURCE
+        docker tag $SOURCE $DESTINATION
+        docker push $DESTINATION
