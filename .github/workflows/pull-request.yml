@@ -19,7 +19,7 @@ jobs:
       - uses: ydataai/cancel-workflow-action@0.7.0
         with:
           ignore_sha: true
-          access_token: ${{ secrets.ACCESS_TOKEN }}
+          access_token: ${{ github.token }}
 
   validate:
     name: Validate

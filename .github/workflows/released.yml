@@ -28,7 +28,7 @@ jobs:
       - uses: ydataai/cancel-workflow-action@0.7.0-fix
         with:
           ignore_sha: true
-          access_token: ${{ secrets.ACCESS_TOKEN }}
+          access_token: ${{ github.token }}
 
 
   prepare:
@@ -63,7 +63,7 @@ jobs:
 
     steps:
     - name: Login to GitHub Registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         registry: ${{ env.GHCR_REGISTRY }}
         username: ${{ env.GHCR_USERNAME }}
