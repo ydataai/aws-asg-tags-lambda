@@ -43,7 +43,6 @@ jobs:
         swift-version: "5.6.1"
 
     - name: Package Resolve
-      if: steps.cache.outputs.cache-hit != 'true'
       run: swift package resolve
 
     - name: Build for test
