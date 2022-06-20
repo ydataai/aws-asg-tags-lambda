@@ -63,7 +63,7 @@ jobs:
 
     steps:
     - name: Login to GitHub Registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         registry: ${{ env.GHCR_REGISTRY }}
         username: ${{ env.GHCR_USERNAME }}
