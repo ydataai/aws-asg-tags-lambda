@@ -18,8 +18,13 @@ let package = Package(
       dependencies: [
         .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
         .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events")
-      ]
+      ],
+      swiftSettings: [ .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)) ]
     ),
-    .executableTarget(name: "CloudFormation", dependencies: [.byName(name: "Shared")])
+    .executableTarget(
+      name: "CloudFormation",
+      dependencies: [.byName(name: "Shared")],
+      swiftSettings: [ .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)) ]
+    )
   ]
 )
