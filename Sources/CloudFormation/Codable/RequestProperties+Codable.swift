@@ -1,5 +1,5 @@
 import Foundation
-import Shared
+import Models
 
 extension RequestProperties: Codable {
   enum CodingKeys: String, CodingKey {

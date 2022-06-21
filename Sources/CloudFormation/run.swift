@@ -1,15 +1,59 @@
+import App
 import AWSLambdaEvents
 import AWSLambdaRuntime
-import Shared
+import Models
 
 @main
 struct CloudFormationHandler: LambdaHandler {
-  typealias Event = CloudFormation.Request<Shared.RequestProperties, Shared.RequestProperties>
-  typealias Output = Void
+  typealias Event = CloudFormation.Request<RequestProperties, RequestProperties>
+  typealias Output = CloudFormation.Response<RequestProperties>
 
-  init(context: LambdaInitializationContext) async throws {}
+  let app: Application
+
+  init(context: LambdaInitializationContext) async throws {
+    self.app = Application(context: context)
+  }
 
   func handle(_ event: Event, context: LambdaContext) async throws -> Output {
-    return ()
+    guard let resourceProperties = event.resourceProperties else {
+      throw Error.missingResourceProperties
+    }
+
+    return await app.run(properties: resourceProperties, runContext: context).encode(for: event)
+  }
+}
+
+extension LambdaResult {
+  func encode<D: Codable>(for request: CloudFormation.Request<D, D>) -> CloudFormation.Response<D> {
+    switch self {
+    case .success:
+      return CloudFormation.Response<D>(
+        status: .success,
+        requestId: request.requestId,
+        logicalResourceId: request.logicalResourceId,
+        stackId: request.stackId,
+        physicalResourceId: request.physicalResourceId,
+        reason: nil,
+        noEcho: nil,
+        data: nil
+      )
+    case .failure(let error):
+      return CloudFormation.Response<D>(
+        status: .failed,
+        requestId: request.requestId,
+        logicalResourceId: request.logicalResourceId,
+        stackId: request.stackId,
+        physicalResourceId: request.physicalResourceId,
+        reason: error.localizedDescription,
+        noEcho: nil,
+        data: nil
+      )
+    }
+  }
+}
+
+extension CloudFormationHandler {
+  enum Error: Swift.Error {
+    case missingResourceProperties
   }
 }
