@@ -10,7 +10,8 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "main"),
-    .package(url: "https://github.com/ydataai/swift-aws-lambda-events.git", branch: "main")
+    .package(url: "https://github.com/ydataai/swift-aws-lambda-events.git", branch: "main"),
+    .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0")
   ],
   targets: [
     .target(
@@ -22,7 +23,8 @@ let package = Package(
       dependencies: [
         .byName(name: "Models"),
         .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-        .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events")
+        .product(name: "SotoAutoScaling", package: "soto"),
+        .product(name: "SotoEKS", package: "soto")
       ],
       swiftSettings: [ .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)) ]
     ),
@@ -30,7 +32,8 @@ let package = Package(
       name: "CloudFormation",
       dependencies: [
         .byName(name: "App"),
-        .byName(name: "Models")
+        .byName(name: "Models"),
+        .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events")
       ],
       swiftSettings: [ .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)) ]
     )
