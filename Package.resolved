@@ -1,12 +1,21 @@
 {
   "pins" : [
     {
+      "identity" : "swift-aws-lambda-events",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ydataai/swift-aws-lambda-events.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "94642d229fea2459ee8400898431160d6f13ffb4"
+      }
+    },
+    {
       "identity" : "swift-aws-lambda-runtime",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-runtime.git",
       "state" : {
-        "revision" : "699ada1724459582303c15aae64fa12ca4d33809",
-        "version" : "0.5.2"
+        "branch" : "main",
+        "revision" : "cb340de265665e23984b1f5de3ac4d413a337804"
       }
     },
     {
