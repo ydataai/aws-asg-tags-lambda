@@ -19,7 +19,7 @@ struct CloudFormationHandler: LambdaHandler {
       throw Error.missingResourceProperties
     }
 
-    return await app.run(properties: resourceProperties, runContext: context).encode(for: event)
+    return await app.run(with: resourceProperties, runContext: context).encode(for: event)
   }
 }
 
