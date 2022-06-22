@@ -5,8 +5,8 @@ import Models
 
 @main
 struct CloudFormationHandler: LambdaHandler {
-  typealias Event = CloudFormation.Request<RequestProperties, RequestProperties>
-  typealias Output = CloudFormation.Response<RequestProperties>
+  typealias Event = CloudFormation.Request<ClusterNodesTags, ClusterNodesTags>
+  typealias Output = CloudFormation.Response<ClusterNodesTags>
 
   let app: Application
 

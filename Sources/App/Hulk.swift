@@ -12,16 +12,16 @@ struct Hulk {
     self.eksClient = eksClient
   }
 
-  func smash(_ properties: RequestProperties) async throws {
+  func smash(_ clusterInfo: ClusterNodesTags) async throws {
     let asgNames = try await withThrowingTaskGroup(
       of: (String, EKS.Nodegroup).self,
       returning: [(String, [String])].self
     ) { taskGroup in
-      properties.nodePools.forEach { nodePool in
+      clusterInfo.nodePools.forEach { nodePool in
         taskGroup.addTask {
           (
             nodePool.name,
-            try await eksClient.describeNodeGroup(name: nodePool.name, clusterName: properties.clusterName)
+            try await eksClient.describeNodeGroup(name: nodePool.name, clusterName: clusterInfo.clusterName)
           )
         }
       }
@@ -34,9 +34,9 @@ struct Hulk {
     }
 
     let tags = asgNames.reduce([AutoScaling.Tag]()) { finalResult, asg in
-      guard let nodePool = properties.nodePools[asg.0] else { return finalResult }
+      guard let nodePool = clusterInfo.nodePools[asg.0] else { return finalResult }
 
-      let allTags = properties.commonTags + nodePool.tags
+      let allTags = clusterInfo.commonTags + nodePool.tags
 
       return finalResult + allTags.flatMap { tag in
         asg.1.map { AutoScaling.Tag(key: tag.name, resourceId: $0, value: tag.value) }

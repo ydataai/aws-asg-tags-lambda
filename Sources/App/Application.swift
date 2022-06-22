@@ -25,9 +25,9 @@ public struct Application {
     self.hulk = Hulk(asgClient: asgClient, eksClient: eksClient)
   }
 
-  public func run(properties: RequestProperties, runContext: LambdaContext) async -> LambdaResult<Error> {
+  public func run(with clusterInfo: ClusterNodesTags, runContext: LambdaContext) async -> LambdaResult<Error> {
     do {
-      try await hulk.smash(properties)
+      try await hulk.smash(clusterInfo)
 
       return .success(())
     } catch {

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct RequestProperties {
+public struct ClusterNodesTags {
   public let clusterName: String
   public let commonTags: [Tag]
   public let nodePools: [NodePool]

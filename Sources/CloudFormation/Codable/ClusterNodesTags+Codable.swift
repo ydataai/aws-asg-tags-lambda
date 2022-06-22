@@ -1,7 +1,7 @@
 import Foundation
 import Models
 
-extension RequestProperties: Codable {
+extension ClusterNodesTags: Codable {
   enum CodingKeys: String, CodingKey {
     case clusterName = "ClusterName"
     case commonTags = "CommonTags"
