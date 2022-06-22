@@ -13,7 +13,10 @@ public struct Application {
   public init(context: LambdaInitializationContext) {
     self.context = context
 
-    self.awsClient = AWSClient(httpClientProvider: .createNewWithEventLoopGroup(self.context.eventLoop))
+    self.awsClient = AWSClient(
+      httpClientProvider: .createNewWithEventLoopGroup(self.context.eventLoop),
+      logger: self.context.logger
+    )
     self.context.terminator.register(name: "\(type(of: AWSClient.self))", handler: self.awsClient.shutdown)
 
     let eks = EKS(client: self.awsClient)
