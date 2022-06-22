@@ -11,3 +11,9 @@ public struct RequestProperties {
     self.nodePools = nodePools
   }
 }
+
+public extension Array where Element == NodePool {
+  subscript(nodePool: String) -> NodePool? {
+    first { $0.name == nodePool }
+  }
+}
