@@ -26,8 +26,7 @@ EKSASGTagLambdaExecutionRole:
     Policies:
     - PolicyName: !Join
         - '-'
-        - - 'ydata-platform'
-          - 'lambda-asg-tag'
+        - - 'lambda-asg-tag'
           - !Ref IntegerSuffix
       PolicyDocument:
         Version: '2012-10-17'
