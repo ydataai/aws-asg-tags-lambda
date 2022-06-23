@@ -1,3 +1,9 @@
+[![Released](https://img.shields.io/github/v/release/ydataai/aws-asg-tags-lambda?display_name=tag&label=release&logo=github&sort=semver&style=flat-square)](https://github.com/ydataai/aws-asg-tags-lambda/actions/workflows/released.yml)
+[![PreReleased](https://img.shields.io/github/v/release/ydataai/aws-asg-tags-lambda?display_name=tag&include_prereleases&label=prerelease&logo=github&sort=semver&style=flat-square)](https://github.com/ydataai/aws-asg-tags-lambda/actions/workflows/prereleased.yml)
+[![CI Status](https://img.shields.io/github/workflow/status/ydataai/aws-asg-tags-lambda/Merge%20Main?label=ci&logo=github&style=flat-square)](https://github.com/ydataai/aws-asg-tags-lambda/actions/workflows/merge-main.yml)
+[![license](https://img.shields.io/github/license/ydataai/aws-asg-tags-lambda?label=license&style=flat-square)](https://github.com/ydataai/aws-asg-tags-lambda/blob/main/LICENSE)
+[![Swift 5.6](https://img.shields.io/badge/Swift-5.6-orange.svg?style=flat-square&logo=swift)](https://developer.apple.com/swift/)
+
 # AWS Auto Scaling Groups Tag lambda
 
 A lambda that add tags to the auto scaling groups of each k8s node.
