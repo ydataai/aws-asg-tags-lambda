@@ -28,4 +28,4 @@ LABEL org.opencontainers.image.source https://github.com/ydataai/aws-asg-tags-la
 # copy executables
 COPY --from=builder /workspace/.build/release /
 
-ENTRYPOINT ["./RunLambda"]
+ENTRYPOINT ["./CloudFormation"]
