@@ -41,5 +41,3 @@ extension HTTP.Client {
     case failedWithResponse(HTTPClientResponse)
   }
 }
-
-
