@@ -1,17 +1,25 @@
 import App
+import AsyncHTTPClient
 import AWSLambdaEvents
 import AWSLambdaRuntime
 import Models
+import NIO
 
 @main
 struct CloudFormationHandler: LambdaHandler {
   typealias Event = CloudFormation.Request<ClusterNodesTags, ClusterNodesTags>
-  typealias Output = CloudFormation.Response<ClusterNodesTags>
+  typealias Output = Void
 
   let app: Application
+  let httpClient: HTTP.Client
 
   init(context: LambdaInitializationContext) async throws {
     self.app = Application(context: context)
+
+    let asyncHTTPClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
+    context.terminator.register(name: "HTTPClient", handler: asyncHTTPClient.shutdown)
+
+    self.httpClient = HTTP.Client(provider: asyncHTTPClient, logger: context.logger)
   }
 
   func handle(_ event: Event, context: LambdaContext) async throws -> Output {
@@ -19,7 +27,9 @@ struct CloudFormationHandler: LambdaHandler {
       throw Error.missingResourceProperties
     }
 
-    return await app.run(with: resourceProperties, runContext: context).encode(for: event)
+    let response = await app.run(with: resourceProperties, runContext: context).encode(for: event)
+
+    try await httpClient.terminateCloudFormationInvocation(event.responseURL, event: response)
   }
 }
 
@@ -55,5 +65,15 @@ extension LambdaResult {
 extension CloudFormationHandler {
   enum Error: Swift.Error {
     case missingResourceProperties
+  }
+}
+
+extension HTTPClient {
+  func shutdown(eventLoop: EventLoop) -> EventLoopFuture<Void> {
+    let promise = eventLoop.makePromise(of: Void.self)
+
+    promise.completeWithTask { try await self.shutdown() }
+
+    return promise.futureResult
   }
 }
