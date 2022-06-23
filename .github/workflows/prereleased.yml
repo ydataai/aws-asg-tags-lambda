@@ -76,7 +76,7 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v3
       env:
-        DOCKER_IMAGE_TAG: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}
+        DOCKER_IMAGE_TAG: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}
       with:
         push: true
         tags: ${{ env.DOCKER_IMAGE_TAG }}
@@ -125,7 +125,7 @@ jobs:
     - build-ghcr
 
     env:
-      COMPONENT: ASG_TAGS_LAMBDA
+      COMPONENT: ASG_TAGS_LAMBDA_VERSION
 
     steps:
     - name: Checkout AWS Marketplace repo
@@ -146,5 +146,5 @@ jobs:
         git config user.email "azory@ydata.ai"
         git config user.name "Azory YData Bot"
         git add ${{ env.COMPONENT }}
-        git commit -a -m "chore(bump): [CI] [DEV] bump ${{ env.COMPONENT }} image tag to $VERSION"
+        git commit -a -m "chore(bump): [CI] [DEV] bump ${{ env.COMPONENT }} to $VERSION"
         git push origin master

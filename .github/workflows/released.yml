@@ -114,7 +114,7 @@ jobs:
     - docker-tag-ghcr
 
     env:
-      COMPONENT: ASG_TAGS_LAMBDA
+      COMPONENT: ASG_TAGS_LAMBDA_VERSION
 
     steps:
     - name: Checkout AWS Marketplace repo
@@ -135,5 +135,5 @@ jobs:
         git config user.email "azory@ydata.ai"
         git config user.name "Azory YData Bot"
         git add ${{ env.COMPONENT }}
-        git commit -a -m "chore(bump): [CI] [PROD] bump ${{ env.COMPONENT }} image tag to $VERSION"
+        git commit -a -m "chore(bump): [CI] [PROD] bump ${{ env.COMPONENT }} to $VERSION"
         git push origin master
