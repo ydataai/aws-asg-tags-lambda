@@ -13,7 +13,6 @@ RUN swift package resolve
 # Copy entire repo into container
 # This copy the build folder to improve package resolve
 COPY Sources Sources
-COPY Tests Tests
 
 # Compile with optimizations
 RUN swift build -c release
