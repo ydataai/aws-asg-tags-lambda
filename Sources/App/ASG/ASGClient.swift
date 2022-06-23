@@ -18,7 +18,7 @@ struct ASGClient<Provider: ASGProvider>: ASGClientRepresentable {
     let updatedTags = tags.map {
       AutoScaling.Tag(
         key: $0.key,
-        propagateAtLaunch: $0.propagateAtLaunch ?? true,
+        propagateAtLaunch: $0.propagateAtLaunch,
         resourceId: $0.resourceId,
         resourceType: $0.resourceType ?? "auto-scaling-group",
         value: $0.value)
