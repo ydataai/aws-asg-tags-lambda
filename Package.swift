@@ -5,17 +5,36 @@ import PackageDescription
 
 let package = Package(
   name: "aws-asg-tags-lambda",
+  platforms: [
+    .macOS(.v12)
+  ],
   dependencies: [
-    .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "0.5.2")
+    .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "main"),
+    .package(url: "https://github.com/ydataai/swift-aws-lambda-events.git", branch: "main"),
+    .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
+    .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.11.1")
   ],
   targets: [
-    .executableTarget(
-      name: "Run",
+    .target(name: "Models"),
+    .target(
+      name: "App",
       dependencies: [
-        .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime")
-      ]),
-    .testTarget(
-      name: "LambdaTests",
-      dependencies: ["Run"])
+        .byName(name: "Models"),
+        .product(name: "AsyncHTTPClient", package: "async-http-client"),
+        .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+        .product(name: "SotoAutoScaling", package: "soto"),
+        .product(name: "SotoEKS", package: "soto")
+      ],
+      swiftSettings: [ .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)) ]
+    ),
+    .executableTarget(
+      name: "CloudFormation",
+      dependencies: [
+        .byName(name: "App"),
+        .byName(name: "Models"),
+        .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events")
+      ],
+      swiftSettings: [ .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)) ]
+    )
   ]
 )

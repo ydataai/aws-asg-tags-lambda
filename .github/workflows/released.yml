@@ -14,6 +14,8 @@ env:
   GHCR_USERNAME: ${{ github.repository_owner }}
   GHCR_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
+  DOCKERHUB_REGISTRY: ydata/
+
   DOCKER_REPOSITORY: aws-asg-tags-lambda
 
 
@@ -54,8 +56,32 @@ jobs:
       run: echo "::set-output name=value::$(git rev-parse --short HEAD)"
 
 
-  docker:
-    name: Docker Tag and Push
+  docker-tag-dockerhub:
+    name: Docker Tag and Push to Docker Hub
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+
+    steps:
+    - name: Login to Dockerhub Registry
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Docker tag and push
+      env:
+        SOURCE: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}.${{ needs.prepare.outputs.build_number }}
+        DESTINATION: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}
+      run: |
+        docker pull $SOURCE
+        docker tag $SOURCE $DESTINATION
+        docker push $DESTINATION
+
+
+  docker-tag-ghcr:
+    name: Docker Tag and Push to Github Container Registry
     runs-on: ubuntu-20.04
 
     needs:
@@ -77,3 +103,37 @@ jobs:
         docker pull $SOURCE
         docker tag $SOURCE $DESTINATION
         docker push $DESTINATION
+
+
+  update-manifests:
+    name: Update AWS Marketplace
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+    - docker-tag-ghcr
+
+    env:
+      COMPONENT: ASG_TAGS_LAMBDA_VERSION
+
+    steps:
+    - name: Checkout AWS Marketplace repo
+      uses: actions/checkout@v3
+      with:
+        repository: ydataai/aws-marketplace
+        token: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Update aws-marketplace
+      env:
+        VERSION: ${{ needs.prepare.outputs.version }}
+      run: echo ${{ env.VERSION }} > ${{ env.COMPONENT }}
+
+    - name: Commit and push image update into manifests repo
+      env:
+        VERSION: ${{ needs.prepare.outputs.version }}
+      run: |
+        git config user.email "azory@ydata.ai"
+        git config user.name "Azory YData Bot"
+        git add ${{ env.COMPONENT }}
+        git commit -a -m "chore(bump): [CI] [PROD] bump ${{ env.COMPONENT }} to $VERSION"
+        git push origin master
