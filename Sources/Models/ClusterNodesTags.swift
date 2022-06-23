@@ -2,7 +2,7 @@ import Foundation
 
 public struct ClusterNodesTags {
   public let clusterName: String
-  public let commonTags: [Tag]
+  public let commonTags: [Tag]?
   public let nodePools: [NodePool]
 
   public init(clusterName: String, commonTags: [Tag], nodePools: [NodePool]) {

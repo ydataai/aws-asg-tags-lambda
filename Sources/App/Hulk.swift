@@ -44,12 +44,14 @@ struct Hulk {
     let tags = asgNames.reduce([AutoScaling.Tag]()) { finalResult, asg in
       guard let nodePool = clusterInfo.nodePools[asg.0] else { return finalResult }
 
-      let allTags = clusterInfo.commonTags + nodePool.tags
+      let allTags = (clusterInfo.commonTags ?? []) + (nodePool.tags ?? [])
 
       logger.debug("tags to add to node \(nodePool.name): \(allTags)")
 
       return finalResult + allTags.flatMap { tag in
-        asg.1.map { AutoScaling.Tag(key: tag.name, resourceId: $0, value: tag.value) }
+        asg.1.map {
+          AutoScaling.Tag(key: tag.name, propagateAtLaunch: tag.propagateAtLaunch, resourceId: $0, value: tag.value)
+        }
       }
     }
 

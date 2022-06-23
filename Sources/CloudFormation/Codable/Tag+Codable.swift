@@ -5,6 +5,7 @@ extension Tag: Codable {
   enum CodingKeys: String, CodingKey {
     case name = "Name"
     case value = "Value"
+    case propagateAtLaunch = "PropagateAtLaunch"
   }
 
   public init(from decoder: Decoder) throws {
@@ -12,7 +13,8 @@ extension Tag: Codable {
 
     self.init(
       name: try container.decode(String.self, forKey: .name),
-      value: try container.decode(String.self, forKey: .value)
+      value: try container.decode(String.self, forKey: .value),
+      propagateAtLaunch: try container.decode(Bool.self, forKey: .propagateAtLaunch)
     )
   }
 
