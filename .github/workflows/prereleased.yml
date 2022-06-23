@@ -10,11 +10,11 @@ on:
 
 
 env:
-  GHCR_REGISTRY: ghcr.io/${{ github.repository_owner }}/
+  GHCR_REGISTRY: ghcr.io/${{ github.repository_owner }}
   GHCR_USERNAME: ${{ github.repository_owner }}
   GHCR_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
-  DOCKERHUB_REGISTRY: ydata/
+  DOCKERHUB_REGISTRY: ydata
 
   DOCKER_REPOSITORY: aws-asg-tags-lambda
 
