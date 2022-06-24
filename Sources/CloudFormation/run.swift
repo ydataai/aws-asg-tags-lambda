@@ -26,6 +26,13 @@ struct CloudFormationHandler: LambdaHandler {
   func handle(_ event: Event, context: LambdaContext) async throws -> Output {
     context.logger.info("running lambda with event \n\(event)")
 
+    switch event.requestType {
+    case .create, .update: return try await createOrUpdate(event, context)
+    case .delete: return try await delete(event, context)
+    }
+  }
+
+  private func createOrUpdate(_ event: Event, _ context: LambdaContext) async throws -> Output {
     guard let resourceProperties = event.resourceProperties else {
       return try await terminate(with: event, result: .failure(Error.missingResourceProperties))
     }
@@ -37,6 +44,10 @@ struct CloudFormationHandler: LambdaHandler {
     context.logger.info("got result\n\(result)")
 
     try await terminate(with: event, result: result)
+  }
+
+  private func delete(_ event: Event, _ context: LambdaContext) async throws -> Output {
+    try await terminate(with: event, result: LambdaResult<Error>.success(()))
   }
 
   private func terminate<E: Swift.Error>(with event: Event, result: LambdaResult<E>) async throws {

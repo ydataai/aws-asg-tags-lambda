@@ -12,6 +12,18 @@ It's user responsability to specify the cluster the pools and the tags for each 
 
 ## How to use
 
+### Push to AWS ECR
+
+Our pipelines publish which new release to the docker hub, but in order to call it from a lambda, it needs to be in the AWS account of your private ECR.
+
+Example, but you can tag it with the name you want:
+
+```bash
+docker pull ydata/aws-asg-tags-lambda:1.0.0
+docker tag ydata/aws-asg-tags-lambda:1.0.0 <your private ECR>/aws-asg-tags-lambda:1.0.0
+docker push <your private ECR>/aws-asg-tags-lambda:1.0.0
+```
+
 ### CloudFormation
 
 The execution role, it's necessary to connect to the EKS and EC2 for the auto scaling groups
@@ -76,26 +88,85 @@ EKSASGTagLambdaInvoke:
     Region: !Ref AWS::Region
     ClusterName: "the EKS cluster name"
     CommonTags:
-    - Name: "A Tag"
-      Value: "A value for the tag"
+    - Name: "ENVIRONMENT"
+      Value: "dev"
+      PropagateAtLaunch: true
     NodePools:
-    - Name: "A node pool name"
+    - Name: "system-nodepool"
       Tags:
-      - Name: "Another Tag"
-        Value: "A value for another tag"
-    - Name: "Another pool name"
-      Tags:
-      - Name: "Another Tag"
-        Value: "A value for another tag"
+      - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
+        Value: 'NoSchedule'
+        PropagateAtLaunch: true
+      - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
+        Value: 'LABEL_VALUE'
+        PropagateAtLaunch: true
+    - Name: "another-pool"
 
 ```
 
+Both `CommonTags` and `Tags` of each NodePool are optional, but if you don't specify `CommonTags` neither `Tags` for each NodePool, it will not do anything.
+
+Check the following examples for other valid combinations
+
+An example with only `CommonTags`
+
+```yaml
+EKSASGTagLambdaInvoke:
+  Type: AWS::CloudFormation::CustomResource
+  DependsOn: EKSASGTagLambdaFunction
+  Version: "1.0"
+  Properties:
+    ServiceToken: !GetAtt EKSASGTagLambdaFunction.Arn
+    StackID: !Ref AWS::StackId
+    AccountID: !Ref AWS::AccountId
+    Region: !Ref AWS::Region
+    ClusterName: "the EKS cluster name"
+    CommonTags:
+    - Name: "ENVIRONMENT"
+      Value: "prod"
+      PropagateAtLaunch: true
+    NodePools:
+    - Name: "system-nodepool"
+    - Name: "applications-nodepool"
+```
+
+An example with only `Tags` for the NodePool
+
+```yaml
+EKSASGTagLambdaInvoke:
+  Type: AWS::CloudFormation::CustomResource
+  DependsOn: EKSASGTagLambdaFunction
+  Version: "1.0"
+  Properties:
+    ServiceToken: !GetAtt EKSASGTagLambdaFunction.Arn
+    StackID: !Ref AWS::StackId
+    AccountID: !Ref AWS::AccountId
+    Region: !Ref AWS::Region
+    ClusterName: "the EKS cluster name"
+    NodePools:
+    - Name: "system-nodepool"
+      Tags:
+      - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
+        Value: 'NoSchedule'
+        PropagateAtLaunch: true
+      - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
+        Value: 'LABEL_VALUE'
+        PropagateAtLaunch: true
+    - Name: "application-nodepool"
+      Tags:
+      - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
+        Value: 'NoSchedule'
+        PropagateAtLaunch: true
+      - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
+        Value: 'LABEL_VALUE'
+        PropagateAtLaunch: true
+```
 
 ## TODO
 - [ ] Add generic context
 - [ ] Tests
 - [ ] Better Documentation
-- [ ] Support other methods of usage
+- [ ] Support other methods of invocation
 
 
 ## About 👯‍♂️
