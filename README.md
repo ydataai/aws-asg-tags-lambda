@@ -19,7 +19,7 @@ Our pipelines publish which new release to the docker hub, but in order to call 
 Example, but you can tag it with the name you want:
 
 ```bash
-docker push ydata/aws-asg-tags-lambda:1.0.0
+docker pull ydata/aws-asg-tags-lambda:1.0.0
 docker tag ydata/aws-asg-tags-lambda:1.0.0 <your private ECR>/aws-asg-tags-lambda:1.0.0
 docker push <your private ECR>/aws-asg-tags-lambda:1.0.0
 ```
