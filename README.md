@@ -94,6 +94,62 @@ EKSASGTagLambdaInvoke:
 
 Both `CommonTags` and `Tags` of each NodePool are optional, but if you don't specify `CommonTags` neither `Tags` for each NodePool, it will not do anything.
 
+Check the following examples for other valid combinations
+
+An example with only `CommonTags`
+
+```yaml
+EKSASGTagLambdaInvoke:
+  Type: AWS::CloudFormation::CustomResource
+  DependsOn: EKSASGTagLambdaFunction
+  Version: "1.0"
+  Properties:
+    ServiceToken: !GetAtt EKSASGTagLambdaFunction.Arn
+    StackID: !Ref AWS::StackId
+    AccountID: !Ref AWS::AccountId
+    Region: !Ref AWS::Region
+    ClusterName: "the EKS cluster name"
+    CommonTags:
+    - Name: "ENVIRONMENT"
+      Value: "prod"
+      PropagateAtLaunch: true
+    NodePools:
+    - Name: "system-nodepool"
+    - Name: "applications-nodepool"
+```
+
+An example with only `Tags` for the NodePool
+
+```yaml
+EKSASGTagLambdaInvoke:
+  Type: AWS::CloudFormation::CustomResource
+  DependsOn: EKSASGTagLambdaFunction
+  Version: "1.0"
+  Properties:
+    ServiceToken: !GetAtt EKSASGTagLambdaFunction.Arn
+    StackID: !Ref AWS::StackId
+    AccountID: !Ref AWS::AccountId
+    Region: !Ref AWS::Region
+    ClusterName: "the EKS cluster name"
+    NodePools:
+    - Name: "system-nodepool"
+      Tags:
+      - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
+        Value: 'NoSchedule'
+        PropagateAtLaunch: true
+      - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
+        Value: 'LABEL_VALUE'
+        PropagateAtLaunch: true
+    - Name: "application-nodepool"
+      Tags:
+      - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
+        Value: 'NoSchedule'
+        PropagateAtLaunch: true
+      - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
+        Value: 'LABEL_VALUE'
+        PropagateAtLaunch: true
+```
+
 ## TODO
 - [ ] Add generic context
 - [ ] Tests
