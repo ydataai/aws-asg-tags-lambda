@@ -76,8 +76,8 @@ EKSASGTagLambdaInvoke:
     Region: !Ref AWS::Region
     ClusterName: "the EKS cluster name"
     CommonTags:
-    - Name: "A Tag"
-      Value: "A value for the tag"
+    - Name: "ENVIRONMENT"
+      Value: "dev"
       PropagateAtLaunch: true
     NodePools:
     - Name: "system-nodepool"
@@ -88,12 +88,7 @@ EKSASGTagLambdaInvoke:
       - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
         Value: 'LABEL_VALUE'
         PropagateAtLaunch: true
-    - Name: "Another pool name"
-      Tags:
-      - Name: "Another Tag"
-        Value: "A value for another tag"
-        PropagateAtLaunch: true
-    - Name: "pool with no specific tags"
+    - Name: "another-pool"
 
 ```
 
@@ -103,7 +98,7 @@ Both `CommonTags` and `Tags` of each NodePool are optional, but if you don't spe
 - [ ] Add generic context
 - [ ] Tests
 - [ ] Better Documentation
-- [ ] Support other methods of usage
+- [ ] Support other methods of invocation
 
 
 ## About 👯‍♂️
