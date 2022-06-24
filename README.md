@@ -8,15 +8,15 @@
 
 A lambda that add tags to the auto scaling groups of each k8s node.
 
-It's user responsability to specify the cluster the pools and the tags for each pool, or specify it in the common tags, if you want the same tag for each node you want to process.
+You have to specify the cluster, the pools and the tags for each pool, or specify them in the common tags if you want the same tag for each node you want to process.
 
 ## How to use
 
 ### Push to AWS ECR
 
-Our pipelines publish which new release to the docker hub, but in order to call it from a lambda, it needs to be in the AWS account of your private ECR.
+Our pipelines publish every new release to the docker hub, but in order to call it from a lambda, you have to push it to your AWS account private ECR.
 
-Example, but you can tag it with the name you want:
+Example  (take into account that you can tag it with the name you want):
 
 ```bash
 docker pull ydata/aws-asg-tags-lambda:1.0.0
@@ -26,7 +26,7 @@ docker push <your private ECR>/aws-asg-tags-lambda:1.0.0
 
 ### CloudFormation
 
-The execution role, it's necessary to connect to the EKS and EC2 for the auto scaling groups
+The execution role is necessary to connect to the EKS and EC2 for the auto scaling groups
 
 ```yaml
 EKSASGTagLambdaExecutionRole:
