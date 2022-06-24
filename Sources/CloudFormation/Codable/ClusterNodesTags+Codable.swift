@@ -13,7 +13,7 @@ extension ClusterNodesTags: Codable {
 
     self.init(
       clusterName: try container.decode(String.self, forKey: .clusterName),
-      commonTags: try container.decode([Tag].self, forKey: .commonTags),
+      commonTags: try container.decodeIfPresent([Tag].self, forKey: .commonTags),
       nodePools: try container.decode([NodePool].self, forKey: .nodePools)
     )
   }
@@ -22,7 +22,7 @@ extension ClusterNodesTags: Codable {
     var container = encoder.container(keyedBy: CodingKeys.self)
 
     try container.encode(clusterName, forKey: .clusterName)
-    try container.encode(commonTags, forKey: .commonTags)
+    try container.encodeIfPresent(commonTags, forKey: .commonTags)
     try container.encode(nodePools, forKey: .nodePools)
   }
 }

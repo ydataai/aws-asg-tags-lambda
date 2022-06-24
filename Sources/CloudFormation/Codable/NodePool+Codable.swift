@@ -12,7 +12,7 @@ extension NodePool: Codable {
 
     self.init(
       name: try container.decode(String.self, forKey: .name),
-      tags: try container.decode([Tag].self, forKey: .tags)
+      tags: try container.decodeIfPresent([Tag].self, forKey: .tags)
     )
   }
 
@@ -20,6 +20,6 @@ extension NodePool: Codable {
     var container = encoder.container(keyedBy: CodingKeys.self)
 
     try container.encode(name, forKey: .name)
-    try container.encode(tags, forKey: .tags)
+    try container.encodeIfPresent(tags, forKey: .tags)
   }
 }
