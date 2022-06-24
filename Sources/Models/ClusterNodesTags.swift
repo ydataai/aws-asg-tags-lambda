@@ -5,7 +5,7 @@ public struct ClusterNodesTags {
   public let commonTags: [Tag]?
   public let nodePools: [NodePool]
 
-  public init(clusterName: String, commonTags: [Tag], nodePools: [NodePool]) {
+  public init(clusterName: String, commonTags: [Tag]?, nodePools: [NodePool]) {
     self.clusterName = clusterName
     self.commonTags = commonTags
     self.nodePools = nodePools
