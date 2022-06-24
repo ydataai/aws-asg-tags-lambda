@@ -12,6 +12,18 @@ It's user responsability to specify the cluster the pools and the tags for each 
 
 ## How to use
 
+### Push to AWS ECR
+
+Our pipelines publish which new release to the docker hub, but in order to call it from a lambda, it needs to be in the AWS account of your private ECR.
+
+Example, but you can tag it with the name you want:
+
+```bash
+docker push ydata/aws-asg-tags-lambda:1.0.0
+docker tag ydata/aws-asg-tags-lambda:1.0.0 <your private ECR>/aws-asg-tags-lambda:1.0.0
+docker push <your private ECR>/aws-asg-tags-lambda:1.0.0
+```
+
 ### CloudFormation
 
 The execution role, it's necessary to connect to the EKS and EC2 for the auto scaling groups
