@@ -21,7 +21,7 @@ RUN swift build -c release
 # ================================
 # Run image
 # ================================
-FROM swift:5.6.1-amazonlinux2-slim
+FROM swift:5.6-amazonlinux2-slim
 
 LABEL org.opencontainers.image.source https://github.com/ydataai/aws-asg-tags-lambda
 
