@@ -23,12 +23,15 @@ public enum HTTP {
       logger.info("CloudFormation will terminate with url \(url)")
 
       var request = HTTPClientRequest(url: url)
+      request.method = .PUT
 
       request.headers.add(name: "Content-Type", value: "")
 
       var byteBuffer = ByteBuffer()
       try encoder.encode(event, into: &byteBuffer)
       request.body = .bytes(byteBuffer)
+
+      logger.debug("performing request for url \(url) with \(request)")
 
       let response = try await provider.execute(request, timeout: .seconds(30), logger: logger)
 

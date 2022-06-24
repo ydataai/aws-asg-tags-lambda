@@ -26,16 +26,20 @@ struct CloudFormationHandler: LambdaHandler {
     context.logger.info("running lambda with event \n\(event)")
 
     guard let resourceProperties = event.resourceProperties else {
-      throw Error.missingResourceProperties
+      return try await terminate(with: event, result: .failure(Error.missingResourceProperties))
     }
 
     context.logger.info("extracted resource properties\n\(resourceProperties)")
 
-    let response = await app.run(with: resourceProperties, runContext: context).encode(for: event)
+    let result = await app.run(with: resourceProperties, runContext: context)
 
-    context.logger.info("got response\n\(response)")
+    context.logger.info("got result\n\(result)")
 
-    try await httpClient.terminateCloudFormationInvocation(event.responseURL, event: response)
+    try await terminate(with: event, result: result)
+  }
+
+  private func terminate<E: Swift.Error>(with event: Event, result: LambdaResult<E>) async throws {
+    try await httpClient.terminateCloudFormationInvocation(event.responseURL, event: result.encode(for: event))
   }
 }
 
