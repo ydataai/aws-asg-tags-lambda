@@ -80,11 +80,14 @@ EKSASGTagLambdaInvoke:
       Value: "A value for the tag"
       PropagateAtLaunch: true
     NodePools:
-    - Name: "A node pool name"
+    - Name: "system-nodepool"
       Tags:
-      - Name: "Another Tag"
-        Value: "A value for another tag"
-        PropagateAtLaunch: false
+      - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
+        Value: 'NoSchedule'
+        PropagateAtLaunch: true
+      - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
+        Value: 'LABEL_VALUE'
+        PropagateAtLaunch: true
     - Name: "Another pool name"
       Tags:
       - Name: "Another Tag"
