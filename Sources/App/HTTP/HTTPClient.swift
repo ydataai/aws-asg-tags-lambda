@@ -20,6 +20,8 @@ public enum HTTP {
     }
 
     public func terminateCloudFormationInvocation<E: Encodable>(_ url: String, event: E) async throws {
+      logger.info("CloudFormation will terminate with url \(url)")
+
       var request = HTTPClientRequest(url: url)
 
       request.headers.add(name: "Content-Type", value: "")
@@ -29,9 +31,16 @@ public enum HTTP {
       request.body = .bytes(byteBuffer)
 
       let response = try await provider.execute(request, timeout: .seconds(30), logger: logger)
+
+      logger.debug("CloudFormation got response for url \(url)\n\(response)")
+
       if response.status != .ok {
+        logger.error("CloudFormation terminated for url \(url) with error)")
+
         throw Error.failedWithResponse(response)
       }
+
+      logger.info("CloudFormation did terminate with url \(url)")
     }
   }
 }
