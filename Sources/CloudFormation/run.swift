@@ -2,6 +2,7 @@ import App
 import AsyncHTTPClient
 import AWSLambdaEvents
 import AWSLambdaRuntime
+import Foundation
 import Models
 import NIO
 
@@ -52,7 +53,7 @@ extension LambdaResult {
         requestId: request.requestId,
         logicalResourceId: request.logicalResourceId,
         stackId: request.stackId,
-        physicalResourceId: request.physicalResourceId,
+        physicalResourceId: request.physicalResourceId ?? UUID().uuidString,
         reason: nil,
         noEcho: nil,
         data: nil
@@ -63,7 +64,7 @@ extension LambdaResult {
         requestId: request.requestId,
         logicalResourceId: request.logicalResourceId,
         stackId: request.stackId,
-        physicalResourceId: request.physicalResourceId,
+        physicalResourceId: request.physicalResourceId ?? UUID().uuidString,
         reason: error.localizedDescription,
         noEcho: nil,
         data: nil
