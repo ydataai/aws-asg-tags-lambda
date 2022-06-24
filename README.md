@@ -78,18 +78,23 @@ EKSASGTagLambdaInvoke:
     CommonTags:
     - Name: "A Tag"
       Value: "A value for the tag"
+      PropagateAtLaunch: true
     NodePools:
     - Name: "A node pool name"
       Tags:
       - Name: "Another Tag"
         Value: "A value for another tag"
+        PropagateAtLaunch: false
     - Name: "Another pool name"
       Tags:
       - Name: "Another Tag"
         Value: "A value for another tag"
+        PropagateAtLaunch: true
+    - Name: "pool with no specific tags"
 
 ```
 
+Both `CommonTags` and `Tags` of each NodePool are optional, but if you don't specify `CommonTags` neither `Tags` for each NodePool, it will not do anything.
 
 ## TODO
 - [ ] Add generic context
