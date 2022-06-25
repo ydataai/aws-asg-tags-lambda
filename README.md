@@ -29,9 +29,12 @@ docker push <your private ECR>/aws-asg-tags-lambda:1.0.0
 The execution role is necessary to connect to the EKS and EC2 for the auto scaling groups
 
 ```yaml
-EKSASGTagLambdaExecutionRole:
+ASGTagLambdaExecutionRole:
   Type: AWS::IAM::Role
   Properties:
+    RoleName: !Join
+      - '-'
+        - 'role'
     AssumeRolePolicyDocument:
       Version: '2012-10-17'
       Statement:
@@ -41,30 +44,29 @@ EKSASGTagLambdaExecutionRole:
           - lambda.amazonaws.com
         Action:
         - sts:AssumeRole
+    ManagedPolicyArns:
+    - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
     Policies:
     - PolicyName: !Join
         - '-'
-        - - 'lambda-asg-tag'
-          - !Ref IntegerSuffix
+          - 'lambda-asg-tag'
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
         - Effect: Allow
           Action:
           - eks:*
-          - ec2:*
+          - autoscaling:CreateOrUpdateTags
           Resource: '*'
-    ManagedPolicyArns:
-    - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 ```
 
 The declaration of the lambda function, which will be used by the invoke
 
 ```yaml
-EKSASGTagLambdaFunction:
+ASGTagLambdaFunction:
   Type: AWS::Lambda::Function
   Properties:
-    Role: !GetAtt EKSASGTagLambdaExecutionRole.Arn
+    Role: !GetAtt ASGTagLambdaExecutionRole.Arn
     PackageType: Image
     Code:
       ImageUri: !Ref EcrImageUri
@@ -77,12 +79,12 @@ EKSASGTagLambdaFunction:
 The lambda invokation
 
 ```yaml
-EKSASGTagLambdaInvoke:
+ASGTagLambdaInvoke:
   Type: AWS::CloudFormation::CustomResource
-  DependsOn: EKSASGTagLambdaFunction
+  DependsOn: ASGTagLambdaFunction
   Version: "1.0"
   Properties:
-    ServiceToken: !GetAtt EKSASGTagLambdaFunction.Arn
+    ServiceToken: !GetAtt ASGTagLambdaFunction.Arn
     StackID: !Ref AWS::StackId
     AccountID: !Ref AWS::AccountId
     Region: !Ref AWS::Region
