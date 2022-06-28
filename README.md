@@ -88,13 +88,13 @@ ASGTagLambdaInvoke:
     StackID: !Ref AWS::StackId
     AccountID: !Ref AWS::AccountId
     Region: !Ref AWS::Region
-    ClusterName: "the EKS cluster name"
+    ClusterName: "the EKS cluster name" #!Ref EKSCluster
     CommonTags:
     - Name: "ENVIRONMENT"
       Value: "dev"
       PropagateAtLaunch: true
     NodePools:
-    - Name: "system-nodepool"
+    - Name: "system-nodepool" #!GetAtt YourNodeGroup.NodegroupName
       Tags:
       - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
         Value: 'NoSchedule'
@@ -122,13 +122,13 @@ EKSASGTagLambdaInvoke:
     StackID: !Ref AWS::StackId
     AccountID: !Ref AWS::AccountId
     Region: !Ref AWS::Region
-    ClusterName: "the EKS cluster name" #!Ref EKSCluster
+    ClusterName: "the EKS cluster name"
     CommonTags:
     - Name: "ENVIRONMENT"
       Value: "prod"
       PropagateAtLaunch: true
     NodePools:
-    - Name: "system-nodepool" #!GetAtt YourNodeGroup.NodegroupName
+    - Name: "system-nodepool"
     - Name: "applications-nodepool"
 ```
 
