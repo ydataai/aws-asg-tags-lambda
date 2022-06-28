@@ -122,13 +122,13 @@ EKSASGTagLambdaInvoke:
     StackID: !Ref AWS::StackId
     AccountID: !Ref AWS::AccountId
     Region: !Ref AWS::Region
-    ClusterName: "the EKS cluster name"
+    ClusterName: "the EKS cluster name" #!Ref EKSCluster
     CommonTags:
     - Name: "ENVIRONMENT"
       Value: "prod"
       PropagateAtLaunch: true
     NodePools:
-    - Name: "system-nodepool"
+    - Name: "system-nodepool" #!GetAtt YourNodeGroup.NodegroupName
     - Name: "applications-nodepool"
 ```
 
