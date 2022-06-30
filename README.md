@@ -167,7 +167,7 @@ EKSASGTagLambdaInvoke:
 ## TODO
 - [ ] Add generic context
 - [ ] Tests
-- [ ] Better Documentation
+- [x] Better Documentation
 - [ ] Support other methods of invocation
 
 
