@@ -38,18 +38,25 @@ jobs:
 
     outputs:
       build_number: ${{ steps.short_sha.outputs.value }}
-      version: ${{ steps.version.outputs.value }}
+      new_version: ${{ steps.new_version.outputs.value }}
+      old_version: ${{ steps.old_version.outputs.value }}
 
     steps:
     - name: Version
-      id: version
+      id: new_version
       run: echo ::set-output name=value::${GITHUB_REF#refs/*/}
 
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Git Short sha
       id: short_sha
-      run: echo "::set-output name=value::$(git rev-parse --short HEAD)"
+      run: echo ::set-output name=value::$(git rev-parse --short HEAD)
+
+    - name: Extract original version
+      id: old_version
+      run: echo ::set-output name=value::$(git tag | grep ${{ steps.short_sha.outputs.value }} | sed -r 's|([0-9].[0-9].[0-9]).*|\1|g')
 
 
   docker-tag:
@@ -63,8 +70,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ECR_ACCESSKEYID }}
-        aws-secret-access-key: ${{ secrets.AWS_ECR_SECRETACCESSKEY }}
+        role-to-assume: ${{ secrets.AWS_ECR_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_ECR_REGION }}
 
     - name: Login to Amazon ECR
@@ -79,9 +85,9 @@ jobs:
 
     - name: Docker tag and push
       env:
-        SOURCE: ${{ steps.ecr.outputs.registry }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}.${{ needs.prepare.outputs.build_number }}
-        DESTINATION_ECR: ${{ steps.ecr.outputs.registry }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}
-        DESTINATION_DOCKERHUB: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.version }}
+        SOURCE: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.old_version }}.${{ needs.prepare.outputs.build_number }}
+        DESTINATION_ECR: ${{ steps.ecr.outputs.registry }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.new_version }}
+        DESTINATION_DOCKERHUB: ${{ env.DOCKERHUB_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:${{ needs.prepare.outputs.new_version }}
       run: |
         docker pull $SOURCE
         docker tag $SOURCE $DESTINATION_ECR
@@ -109,13 +115,11 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Update aws-marketplace
-      env:
-        VERSION: ${{ needs.prepare.outputs.version }}
-      run: echo ${{ env.VERSION }} > ${{ env.COMPONENT }}
+      run: echo ${{ needs.prepare.outputs.new_version }} > ${{ env.COMPONENT }}
 
     - name: Commit and push image update into manifests repo
       env:
-        VERSION: ${{ needs.prepare.outputs.version }}
+        VERSION: ${{ needs.prepare.outputs.new_version }}
       run: |
         git config user.email "azory@ydata.ai"
         git config user.name "Azory YData Bot"
