@@ -11,8 +11,14 @@ on:
 
 env:
   DOCKERHUB_REGISTRY: ydata
-
   DOCKER_REPOSITORY: aws-asg-tags-lambda
+
+
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
 
 
 
