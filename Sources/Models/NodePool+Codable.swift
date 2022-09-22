@@ -1,5 +1,4 @@
 import Foundation
-import Models
 
 extension NodePool: Codable {
   enum CodingKeys: String, CodingKey {

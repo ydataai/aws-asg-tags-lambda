@@ -1,7 +1,7 @@
 # ================================
 # Build image
 # ================================
-FROM swift:5.6 as builder
+FROM swift:5.6-focal as builder
 
 WORKDIR /workspace
 
@@ -15,17 +15,21 @@ RUN swift package resolve
 COPY Sources Sources
 
 # Compile with optimizations
-RUN swift build -c release
+RUN swift build -c release --product Command
 
 
 # ================================
 # Run image
 # ================================
-FROM swift:5.6-amazonlinux2-slim
+FROM gcr.io/distroless/cc:nonroot
 
 LABEL org.opencontainers.image.source https://github.com/ydataai/aws-asg-tags-lambda
 
+COPY --from=builder /lib/x86_64-linux-gnu/libz*so* /lib/x86_64-linux-gnu/
+
 # copy executables
 COPY --from=builder /workspace/.build/release /
+# copy Swift's dynamic libraries dependencies
+COPY --from=builder /usr/lib/swift/linux/lib*so* /
 
-ENTRYPOINT ["./CloudFormation"]
+ENTRYPOINT ["/Command"]

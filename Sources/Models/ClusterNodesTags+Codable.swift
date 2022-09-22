@@ -1,8 +1,7 @@
 import Foundation
-import Models
 
 extension ClusterNodesTags: Codable {
-  enum CodingKeys: String, CodingKey {
+  public enum CodingKeys: String, CodingKey {
     case clusterName = "ClusterName"
     case commonTags = "CommonTags"
     case nodePools = "NodePools"
