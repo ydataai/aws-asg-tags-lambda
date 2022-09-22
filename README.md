@@ -97,7 +97,7 @@ ASGTagLambdaInvoke:
     - Name: "system-nodepool" #!GetAtt YourNodeGroup.NodegroupName
       Tags:
       - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
-        Value: 'NoSchedule'
+        Value: 'TAINT_VALUE:TAINT_EFFECT'
         PropagateAtLaunch: true
       - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
         Value: 'LABEL_VALUE'
@@ -149,7 +149,7 @@ EKSASGTagLambdaInvoke:
     - Name: "system-nodepool"
       Tags:
       - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
-        Value: 'NoSchedule'
+        Value: 'TAINT_VALUE:NoSchedule'
         PropagateAtLaunch: true
       - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
         Value: 'LABEL_VALUE'
@@ -157,7 +157,7 @@ EKSASGTagLambdaInvoke:
     - Name: "application-nodepool"
       Tags:
       - Name: 'k8s.io/cluster-autoscaler/node-template/taint/TAINT'
-        Value: 'NoSchedule'
+        Value: 'TAINT_VALUE:NoSchedule'
         PropagateAtLaunch: true
       - Name: 'k8s.io/cluster-autoscaler/node-template/label/LABEL'
         Value: 'LABEL_VALUE'
