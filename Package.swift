@@ -12,7 +12,8 @@ let package = Package(
     .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "main"),
     .package(url: "https://github.com/ydataai/swift-aws-lambda-events.git", branch: "main"),
     .package(url: "https://github.com/soto-project/soto.git", from: "6.0.0"),
-    .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.11.1")
+    .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.11.1"),
+    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.4")
   ],
   targets: [
     .target(name: "Models"),
@@ -33,6 +34,15 @@ let package = Package(
         .byName(name: "App"),
         .byName(name: "Models"),
         .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events")
+      ],
+      swiftSettings: [ .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)) ]
+    ),
+    .executableTarget(
+      name: "Command",
+      dependencies: [
+        .byName(name: "App"),
+        .byName(name: "Models"),
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ],
       swiftSettings: [ .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)) ]
     )

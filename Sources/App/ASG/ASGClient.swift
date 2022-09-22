@@ -1,20 +1,20 @@
 import Foundation
 import SotoAutoScaling
 
-protocol ASGClientRepresentable {
+public protocol ASGClientRepresentable {
   func updateTags(_ tags: [AutoScaling.Tag]) async throws
 }
 
-struct ASGClient<Provider: ASGProvider>: ASGClientRepresentable {
+public struct ASGClient<Provider: ASGProvider>: ASGClientRepresentable {
   let logger: Logger
   let provider: Provider
 
-  init(logger: Logger, provider: Provider) {
+  public init(logger: Logger, provider: Provider) {
     self.logger = logger
     self.provider = provider
   }
 
-  func updateTags(_ tags: [AutoScaling.Tag]) async throws {
+  public func updateTags(_ tags: [AutoScaling.Tag]) async throws {
     let updatedTags = tags.map {
       AutoScaling.Tag(
         key: $0.key,

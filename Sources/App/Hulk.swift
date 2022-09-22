@@ -3,12 +3,18 @@ import Models
 import SotoAutoScaling
 import SotoEKS
 
-struct Hulk {
+public struct Hulk {
   let asgClient: any ASGClientRepresentable
   let eksClient: any EKSClientRepresentable
   let logger: Logger
 
-  func smash(_ clusterInfo: ClusterNodesTags) async throws {
+  public init(asgClient: any ASGClientRepresentable, eksClient: any EKSClientRepresentable, logger: Logger) {
+    self.asgClient = asgClient
+    self.eksClient = eksClient
+    self.logger = logger
+  }
+
+  public func smash(_ clusterInfo: ClusterNodesTags) async throws {
     logger.info("let's smash tags into ASGs with \(clusterInfo)")
 
     let asgNames = try await withThrowingTaskGroup(

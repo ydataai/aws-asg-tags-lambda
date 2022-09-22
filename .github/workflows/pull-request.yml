@@ -45,5 +45,8 @@ jobs:
     - name: Package Resolve
       run: swift package resolve
 
-    - name: Build for test
-      run: swift build
+    - name: Build CloudFormation for test
+      run: swift build --product CloudFormation
+
+    - name: Build Command for test
+      run: swift build --product Command
