@@ -1,5 +1,6 @@
 import App
 import ArgumentParser
+import Foundation
 import Models
 import NIO
 import SotoCore
@@ -10,6 +11,16 @@ import SotoEKS
 struct Command: AsyncParsableCommand {
   static var configuration: CommandConfiguration { CommandConfiguration(commandName: "aws-asg-tags") }
 
+  // swiftlint:disable force_try
+
+  @Option(name: .shortAndLong)
+  var clusterName: String = try! Environment.get(ClusterNodesTags.CodingKeys.clusterName)
+
+  @Option(name: .long)
+  var nodePools: [NodePool] = try! Environment.get(ClusterNodesTags.CodingKeys.nodePools)
+
+  @Option(name: .long)
+  var commonTags: [Tag]? = try? Environment.get(ClusterNodesTags.CodingKeys.commonTags)
 
   func run() async throws {
     let logger = Logger(label: "ai.ydata.aws-asg-tags")
@@ -32,31 +43,15 @@ struct Command: AsyncParsableCommand {
 
     let hulk = Hulk(asgClient: asgClient, eksClient: eksClient, logger: logger)
 
-    let clusterNodeTags = try createClusterNodeTags(logger)
+    let clusterNodeTags = ClusterNodesTags(
+      clusterName: clusterName,
+      commonTags: commonTags,
+      nodePools: nodePools
+    )
+
+    logger.info("processing cluster node tags:\n\(clusterNodeTags)")
 
     try await hulk.smash(clusterNodeTags)
-  }
-
-  private func createClusterNodeTags(_ logger: Logger) throws -> ClusterNodesTags {
-    guard let clusterName = Environment.get(ClusterNodesTags.CodingKeys.clusterName) else {
-      logger.error("missing value for property \(ClusterNodesTags.CodingKeys.clusterName.description))")
-      throw Error.missingProperty
-    }
-
-    logger.info("extracted clusterName from env: \(clusterName)")
-
-    guard let nodePools: [NodePool] = try Environment.get(ClusterNodesTags.CodingKeys.nodePools) else {
-      logger.error("missing value for property \(ClusterNodesTags.CodingKeys.nodePools.description))")
-      throw Error.missingProperty
-    }
-
-    logger.info("extracted nodePools from env: \(nodePools)")
-
-    let commonTags: [Tag]? = try Environment.get(ClusterNodesTags.CodingKeys.commonTags)
-
-    logger.info("commonTags extracted from env: \(commonTags ?? [])")
-
-    return ClusterNodesTags(clusterName: clusterName, commonTags: commonTags, nodePools: nodePools)
   }
 }
 
