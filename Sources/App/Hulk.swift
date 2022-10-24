@@ -63,7 +63,11 @@ public struct Hulk {
 
     logger.info("will smash tags \(tags)")
 
-    try await asgClient.updateTags(tags)
+    for chunk in tags.chunked(into: 25) {
+      logger.info("smashing chunk of tags \(chunk)")
+
+      try await asgClient.updateTags(chunk)
+    }
 
     logger.info("smashed tags with \(clusterInfo)")
   }
