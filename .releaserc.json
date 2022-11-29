@@ -5,11 +5,10 @@
     ["@semantic-release/commit-analyzer", {
       "preset": "angular",
       "releaseRules": [
-        {"type": "chore", "release": "patch"},
+        {"type": "chore", "scope": "deps", "release": "patch"},
         {"type": "refactor", "release": "patch"}
       ]
     }],
-      "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
       "@semantic-release/github"
   ]
