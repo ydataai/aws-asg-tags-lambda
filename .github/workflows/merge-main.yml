@@ -35,7 +35,7 @@ jobs:
 
     - name: Git Short sha
       id: short_sha
-      run: echo "::set-output name=value::$(git rev-parse --short HEAD)"
+      run: echo "value=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
 
   dev-release:
