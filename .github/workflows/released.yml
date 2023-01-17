@@ -51,7 +51,7 @@ jobs:
     steps:
     - name: Version
       id: new_version
-      run: echo ::set-output name=value::${GITHUB_REF#refs/*/}
+      run: echo "value=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
 
     - uses: actions/checkout@v3
       with:
@@ -59,11 +59,11 @@ jobs:
 
     - name: Git Short sha
       id: short_sha
-      run: echo ::set-output name=value::$(git rev-parse --short HEAD)
+      run: echo "value=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
     - name: Extract original version
       id: old_version
-      run: echo ::set-output name=value::$(git tag | grep ${{ steps.short_sha.outputs.value }} | sed -r 's|([0-9].[0-9].[0-9]).*|\1|g')
+      run: echo "value=$(git tag | grep ${{ steps.short_sha.outputs.value }} | sed -r 's|([0-9].[0-9].[0-9]).*|\1|g')" >> $GITHUB_OUTPUT
 
 
   docker-tag-command:
