@@ -35,13 +35,13 @@ jobs:
 
     - name: Git Short sha
       id: short_sha
-      run: echo "::set-output name=value::$(git rev-parse --short HEAD)"
+      run: echo "value=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
 
-  dev-release:
+  releases:
     if: needs.prepare.outputs.new_release == 'true'
 
-    name: Dev Release
+    name: Dev and Drft Releases
     runs-on: ubuntu-20.04
 
     needs:
@@ -60,17 +60,6 @@ jobs:
         body: ${{ github.event.head_commit.message }}
         prerelease: true
 
-
-  draft-release:
-    if: needs.prepare.outputs.new_release == 'true'
-
-    name: Draft Release
-    runs-on: ubuntu-20.04
-
-    needs:
-    - prepare
-
-    steps:
     - name: Delete Previous drafts
       uses: hugo19941994/delete-draft-releases@v1.0.0
       env:
