@@ -32,7 +32,7 @@ RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -
 # ================================
 # Run image
 # ================================
-FROM swift:5.6-amazonlinux2-slim
+FROM swift:5.7-amazonlinux2-slim
 
 LABEL org.opencontainers.image.source https://github.com/ydataai/aws-asg-tags-lambda
 
