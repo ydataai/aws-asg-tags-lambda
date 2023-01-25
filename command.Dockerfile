@@ -23,7 +23,7 @@ RUN swift build -c release --static-swift-stdlib --product Command
 WORKDIR /workspace
 
 # Copy main executable to workspace area
-RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Run" ./
+RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Command" ./
 
 # Copy resources bundled by SPM to workspace area
 RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
