@@ -79,6 +79,7 @@ jobs:
     - name: Create SBOM
       uses: anchore/sbom-action@v0
       with:
+        upload-artifact-retention: 1
         format: spdx-json
         output-file: ${{ env.SBOM_FILENAME }}.spdx.json
 
