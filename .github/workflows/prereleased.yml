@@ -30,7 +30,7 @@ permissions:
 jobs:
   cancel_previous:
     name: 'Cancel Previous Runs'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 3
 
     steps:
@@ -42,7 +42,7 @@ jobs:
 
   prepare:
     name: Prepare
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs:
     - cancel_previous
@@ -58,7 +58,7 @@ jobs:
 
   build-command:
     name: Build and push the COMMAND version
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs:
     - prepare
@@ -144,7 +144,7 @@ jobs:
 
   build-lambda:
     name: Build and push LAMBDA version
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs:
     - prepare
@@ -230,7 +230,7 @@ jobs:
 
   update-manifests:
     name: Update AWS Marketplace
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs:
     - prepare
