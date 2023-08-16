@@ -13,7 +13,7 @@ let package = Package(
     .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
     .package(url: "https://github.com/soto-project/soto.git", from: "6.7.0"),
     .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.18.0"),
-    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.2")
+    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.3")
   ],
   targets: [
     .target(name: "Models"),
