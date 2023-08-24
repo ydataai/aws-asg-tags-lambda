@@ -97,7 +97,7 @@ jobs:
         echo "value=$(grep -cE "(medium|high|critical) vulnerability" ${{ steps.scan_sbom.outputs.sarif }})" >> $GITHUB_OUTPUT
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: ${{ secrets.AWS_S3_SBOMS_ROLE_ARN }}
         aws-region: ${{ env.AWS_S3_REGION }}
