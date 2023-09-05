@@ -64,7 +64,7 @@ jobs:
     - prepare
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: actions/cache@v3
       with:
@@ -150,7 +150,7 @@ jobs:
     - prepare
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: actions/cache@v3
       with:
@@ -241,7 +241,7 @@ jobs:
 
     steps:
     - name: Checkout AWS Marketplace repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ydataai/aws-marketplace
         token: ${{ secrets.ACCESS_TOKEN }}
