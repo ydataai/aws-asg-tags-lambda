@@ -75,7 +75,7 @@ jobs:
 
     - name: Build Docker Image
       id: docker_build
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v4
       env:
         DOCKER_IMAGE_TAG: ${{ env.DOCKER_REPOSITORY_COMMAND }}:${{ needs.prepare.outputs.version }}
       with:
@@ -129,7 +129,7 @@ jobs:
         notion_page_update_properties: '{  "Docker Scan": { "rich_text": [ { "text": { "content": ${{ env.STATUS_ICON }}, "link": ${{ env.STATUS_URL }} } } ] }, "SBOMS": { "url": "https://s3.console.aws.amazon.com/s3/buckets/repos-sboms?region=${{ env.AWS_S3_REGION }}&prefix=${{ github.event.repository.name }}/" }  }'
 
     - name: Login to Dockerhub Registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -161,7 +161,7 @@ jobs:
 
     - name: Build Docker Image
       id: docker_build
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v4
       env:
         DOCKER_IMAGE_TAG: ${{ env.DOCKER_REPOSITORY_LAMBDA }}:${{ needs.prepare.outputs.version }}
       with:
@@ -215,7 +215,7 @@ jobs:
         notion_page_update_properties: '{  "Docker Scan": { "rich_text": [ { "text": { "content": ${{ env.STATUS_ICON }}, "link": ${{ env.STATUS_URL }} } } ] }, "SBOMS": { "url": "https://s3.console.aws.amazon.com/s3/buckets/repos-sboms?region=${{ env.AWS_S3_REGION }}&prefix=${{ github.event.repository.name }}/" }  }'
 
     - name: Login to Dockerhub Registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
