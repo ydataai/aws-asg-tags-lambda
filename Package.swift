@@ -12,7 +12,7 @@ let package = Package(
     .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "1.0.0-alpha.1"),
     .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
     .package(url: "https://github.com/soto-project/soto.git", from: "6.8.0"),
-    .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.20.0"),
+    .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.20.1"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0")
   ],
   targets: [
