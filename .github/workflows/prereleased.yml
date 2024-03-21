@@ -101,7 +101,7 @@ jobs:
 
     - name: Copy SBOM to S3
       run: |
-        aws s3 cp ${{ env.SBOM_FILENAME }}.cyclonedx.json s3://repos-sboms/${{ github.event.repository.name }}/${{ env.SBOM_FILENAME }}.cyclonedx.json
+        aws s3 cp ${{ env.SBOM_FILENAME }}.cyclonedx.json s3://repos-sboms/${{ github.event.repository.name }}/command-${{ env.SBOM_FILENAME }}.cyclonedx.json
 
     - name: Login to Dockerhub Registry
       uses: docker/login-action@v3
@@ -151,21 +151,9 @@ jobs:
       with:
         upload-artifact-retention: 1
         image: ${{ steps.docker_build.outputs.imageId }}
-        format: spdx-json
+        format: cyclonedx-json
         upload-release-assets: false
-        output-file: ${{ env.SBOM_FILENAME }}.spdx.json
-
-    - name: Scan SBOM
-      id: scan_sbom
-      uses: anchore/scan-action@v3
-      with:
-        sbom: ${{ env.SBOM_FILENAME }}.spdx.json
-        output-format: sarif
-        fail-build: false
-
-    - name: Determine number of noticiable vulnerabilities
-      id: count_vulnerabilities
-      run: echo "value=$(grep -cE "(medium|high|critical) vulnerability" ${{ steps.scan_sbom.outputs.sarif }})" >> $GITHUB_OUTPUT
+        output-file: ${{ env.SBOM_FILENAME }}.cyclonedx.json
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -175,19 +163,7 @@ jobs:
 
     - name: Copy SBOM to S3
       run: |
-        aws s3 cp ${{ env.SBOM_FILENAME }}.spdx.json s3://repos-sboms/${{ github.event.repository.name }}/lambda-${{ env.SBOM_FILENAME }}.spdx.json
-        aws s3 cp ${{ steps.scan_sbom.outputs.sarif }} s3://repos-sboms/${{ github.event.repository.name }}/lambda-${{ env.SBOM_FILENAME }}-scan.sarif
-
-    - name: Update Notion Page
-      uses: ydataai/update-notion-page@v1
-      env:
-        STATUS_ICON: ${{ steps.count_vulnerabilities.outputs.value == '0' && '"✅"' || '"⚠️"' }}
-        STATUS_URL: ${{ steps.count_vulnerabilities.outputs.value == '0' && 'null' || format('{{"url":"https://s3.console.aws.amazon.com/s3/buckets/repos-sboms?region={0}&prefix={1}/{2}-{3}-scan.sarif"}}', env.AWS_S3_REGION, github.event.repository.name, 'lambda', env.SBOM_FILENAME) }}
-      with:
-        notion_secret: ${{ secrets.NOTION_SECRET }}
-        notion_database_id: ${{ env.NOTION_DATABASE_ID }}
-        notion_database_query_filter: '{  "property": "Repo",  "title": { "equals": "${{ github.event.repository.name }}" }  }'
-        notion_page_update_properties: '{  "Docker Scan": { "rich_text": [ { "text": { "content": ${{ env.STATUS_ICON }}, "link": ${{ env.STATUS_URL }} } } ] }, "SBOMS": { "url": "https://s3.console.aws.amazon.com/s3/buckets/repos-sboms?region=${{ env.AWS_S3_REGION }}&prefix=${{ github.event.repository.name }}/" }  }'
+        aws s3 cp ${{ env.SBOM_FILENAME }}.cyclonedx.json s3://repos-sboms/${{ github.event.repository.name }}/lambda-${{ env.SBOM_FILENAME }}.cyclonedx.json
 
     - name: Login to Dockerhub Registry
       uses: docker/login-action@v3
