@@ -21,7 +21,7 @@ env:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   packages: write
 
 
@@ -211,3 +211,31 @@ jobs:
         git add ${{ env.COMPONENT }}
         git commit -a -m "chore(bump): [CI] [DEV] bump ${{ env.COMPONENT }} to $VERSION"
         git push origin master
+
+
+  static-analysis:
+    name: Static Analysis
+    runs-on:
+    #- self-hosted
+    #- large
+    - ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Create SBOM
+      uses: anchore/sbom-action@v0
+      with:
+        upload-artifact-retention: 1
+        format: cyclonedx-json
+        output-file: package-sbom.cyclonedx.json
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_S3_SBOMS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_S3_REGION }}
+
+    - name: Copy SBOM to S3
+      run: |
+        aws s3 cp package-sbom.cyclonedx.json s3://repos-sboms/${{ github.event.repository.name }}/package-sbom.cyclonedx.json
