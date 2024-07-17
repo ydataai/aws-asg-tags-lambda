@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -9,11 +9,11 @@ let package = Package(
     .macOS(.v12)
   ],
   dependencies: [
-    .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "1.0.0-alpha.1"),
-    .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
-    .package(url: "https://github.com/soto-project/soto.git", from: "6.8.0"),
-    .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.20.1"),
-    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.1")
+    .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "1.0.0-alpha.2"),
+    .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.4.0"),
+    .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0"),
+    .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.2"),
+    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.4.0")
   ],
   targets: [
     .target(name: "Models"),
