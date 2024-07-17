@@ -75,7 +75,7 @@ jobs:
 
     - name: Build Docker Image
       id: docker_build
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       env:
         DOCKER_IMAGE_TAG: ${{ env.DOCKER_REPOSITORY_COMMAND }}:${{ needs.prepare.outputs.version }}
       with:
@@ -137,7 +137,7 @@ jobs:
 
     - name: Build Docker Image
       id: docker_build
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       env:
         DOCKER_IMAGE_TAG: ${{ env.DOCKER_REPOSITORY_LAMBDA }}:${{ needs.prepare.outputs.version }}
       with:
