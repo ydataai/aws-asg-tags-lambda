@@ -5,11 +5,11 @@ public protocol ASGClientRepresentable {
   func updateTags(_ tags: [AutoScaling.Tag]) async throws
 }
 
-public struct ASGClient<Provider: ASGProvider>: ASGClientRepresentable {
+public struct ASGClient: ASGClientRepresentable {
   let logger: Logger
-  let provider: Provider
+  let provider: AutoScaling
 
-  public init(logger: Logger, provider: Provider) {
+  public init(logger: Logger, provider: AutoScaling) {
     self.logger = logger
     self.provider = provider
   }

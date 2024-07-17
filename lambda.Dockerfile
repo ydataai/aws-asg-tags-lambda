@@ -1,7 +1,7 @@
 # ================================
 # Build image
 # ================================
-FROM swift:5.9-bionic as builder
+FROM swift:5.9-amazonlinux2 as builder
 
 # Set up a build area
 WORKDIR /build

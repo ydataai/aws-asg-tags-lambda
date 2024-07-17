@@ -1,3 +1,4 @@
+import AsyncHTTPClient
 import AWSLambdaRuntime
 import Models
 import SotoCore
@@ -14,8 +15,7 @@ public struct Application {
     self.context = context
 
     self.awsClient = AWSClient(
-      httpClientProvider: .createNewWithEventLoopGroup(self.context.eventLoop),
-      logger: self.context.logger
+      httpClient: HTTPClient(eventLoopGroup: self.context.eventLoop), logger: self.context.logger
     )
     self.context.terminator.register(name: "\(type(of: AWSClient.self))", handler: self.awsClient.shutdown)
 
@@ -42,15 +42,5 @@ public struct Application {
 
       return .failure(error)
     }
-  }
-}
-
-extension AWSClient {
-  func shutdown(eventLoop: EventLoop) -> EventLoopFuture<Void> {
-    let promise = eventLoop.makePromise(of: Void.self)
-
-    promise.completeWithTask { try await self.shutdown() }
-
-    return promise.futureResult
   }
 }

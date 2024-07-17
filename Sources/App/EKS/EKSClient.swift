@@ -4,11 +4,11 @@ public protocol EKSClientRepresentable {
   func describeNodeGroup(name: String, clusterName: String) async throws -> EKS.Nodegroup
 }
 
-public struct EKSClient<Provider: EKSProvider>: EKSClientRepresentable {
+public struct EKSClient: EKSClientRepresentable {
   let logger: Logger
-  let provider: Provider
+  let provider: EKS
 
-  public init(logger: Logger, provider: Provider) {
+  public init(logger: Logger, provider: EKS) {
     self.logger = logger
     self.provider = provider
   }

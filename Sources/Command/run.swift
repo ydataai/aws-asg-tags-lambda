@@ -1,5 +1,6 @@
 import App
 import ArgumentParser
+import AsyncHTTPClient
 import Foundation
 import Models
 import NIO
@@ -27,8 +28,7 @@ struct Command: AsyncParsableCommand {
     let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
 
     let awsClient = AWSClient(
-      httpClientProvider: .createNewWithEventLoopGroup(eventLoop),
-      logger: logger
+      httpClient: HTTPClient(eventLoopGroup: eventLoop), logger: logger
     )
 
     defer {
