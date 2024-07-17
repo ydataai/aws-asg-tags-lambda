@@ -1,7 +1,7 @@
 # ================================
 # Build image
 # ================================
-FROM swift:5.7-jammy as builder
+FROM swift:5.9-jammy as builder
 
 # Set up a build area
 WORKDIR /build
@@ -32,7 +32,7 @@ RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -
 # ================================
 # Run image
 # ================================
-FROM swift:5.7-jammy-slim
+FROM swift:5.9-jammy-slim
 
 LABEL org.opencontainers.image.source https://github.com/ydataai/aws-asg-tags-lambda
 
