@@ -52,9 +52,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-spm-
 
-    - uses: fwal/setup-swift@v2
+    - uses: swift-actions/setup-swift@v2
       with:
-        swift-version: "5.7"
+        swift-version: "5.9"
 
     - name: Package Resolve
       run: swift package resolve
