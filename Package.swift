@@ -9,7 +9,7 @@ let package = Package(
     .macOS(.v12)
   ],
   dependencies: [
-    .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "1.0.0-alpha.2"),
+    .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.2"),
     .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.4.0"),
     .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0"),
     .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.2"),
