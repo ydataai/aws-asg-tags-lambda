@@ -225,7 +225,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Create SBOM
-      uses: anchore/sbom-action@v0.17.2
+      uses: anchore/sbom-action@v0.17.0
       with:
         upload-artifact-retention: 1
         format: cyclonedx-json
