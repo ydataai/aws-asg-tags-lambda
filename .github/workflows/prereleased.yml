@@ -30,7 +30,7 @@ permissions:
 jobs:
   cancel_previous:
     name: 'Cancel Previous Runs'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
 
     steps:
@@ -42,7 +42,7 @@ jobs:
 
   prepare:
     name: Prepare
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - cancel_previous
@@ -58,7 +58,7 @@ jobs:
 
   build-command:
     name: Build and push the COMMAND version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - prepare
@@ -120,7 +120,7 @@ jobs:
 
   build-lambda:
     name: Build and push LAMBDA version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - prepare
@@ -182,7 +182,7 @@ jobs:
 
   update-manifests:
     name: Update AWS Marketplace
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - prepare
@@ -219,13 +219,13 @@ jobs:
     runs-on:
     #- self-hosted
     #- large
-    - ubuntu-22.04
+    - ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Create SBOM
-      uses: anchore/sbom-action@v0.17.2
+      uses: anchore/sbom-action@v0.17.0
       with:
         upload-artifact-retention: 1
         format: cyclonedx-json

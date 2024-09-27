@@ -26,7 +26,7 @@ permissions:
 jobs:
   cancel_previous:
     name: 'Cancel Previous Runs'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
 
     steps:
@@ -38,7 +38,7 @@ jobs:
 
   prepare:
     name: Prepare
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - cancel_previous
@@ -68,7 +68,7 @@ jobs:
 
   docker-tag-command:
     name: Docker Tag and Push COMMAND version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - prepare
@@ -92,7 +92,7 @@ jobs:
 
   docker-tag-lambda:
     name: Docker Tag and Push LAMBDA version
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - prepare
@@ -116,7 +116,7 @@ jobs:
 
   update-manifests:
     name: Update AWS Marketplace
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - prepare

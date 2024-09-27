@@ -26,7 +26,7 @@ permissions:
 jobs:
   cancel_previous:
     name: 'Cancel Previous Runs'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
 
     steps:
@@ -37,7 +37,7 @@ jobs:
 
   validate:
     name: Validate
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - cancel_previous
@@ -68,13 +68,13 @@ jobs:
 
   static-analysis:
     name: Static Analysis
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Create SBOM
-      uses: anchore/sbom-action@v0.17.2
+      uses: anchore/sbom-action@v0.17.0
       with:
         upload-artifact-retention: 1
         format: cyclonedx-json
